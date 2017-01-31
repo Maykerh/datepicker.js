@@ -196,7 +196,7 @@ datepicker = function(obj){
 			selectYearTable.id = "select-year-table";
 			selectYearDiv.appendChild(selectYearTable);
 
-		///////////continuar aqui criando a div do ano////////
+		 ///////////continuar aqui criando a div do ano////////
 
 		
 	}
