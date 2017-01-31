@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<title>js date test</title>
+	<script type="text/javascript" src="datepicker.js"></script>
+<style type="text/css">
+	
+	.datepicker{
+		width: 250px;
+		height: 250px;
+		background-color: #fff;
+		border: 1px solid black;
+		border-radius: 5px;
+		margin-top: 10px;
+		color: #1d1d1d;
+		font-family: sans-serif;
+		font-size: 14px;
+	}
+	.year-month{
+		width: 100%;
+		height: 50px;
+		background-color: black;
+	}
+
+	#button-monthforward{
+		float: right;
+		border-top-right-radius: 5px
+
+	}
+
+	#button-monthbackward{
+		float: left;
+		border-top-left-radius: 5px
+	}
+
+	.month-direction{
+		width: 14%;
+		height: 50px;
+		background-color: #eee;
+		border: none;
+	}
+
+	.direction-symbol{
+		line-height: 50px;
+		align-content: center;
+		padding-left: 5px;
+		font-weight: bolder;
+		font-family: Helvetica;
+	}
+
+	#header{
+		float: left;
+		width: 72%;
+		background-color: #eee;
+		text-align: center;
+		font-weight: bolder;
+	}
+	#days{
+		width: 100%;
+		background-color: #fff;
+	}
+	#days th{
+		height: 25px;
+	}
+	.day-button{
+		width: 28px;
+		height: 25px;
+		margin: 3px;
+		background-color: white;
+		text-align: center;
+		line-height: 25px;
+		border-radius: 5px;
+	}
+	.day-button:hover{
+		background-color: #ddd;
+	}
+	.active{
+		background-color: blue !important;
+	}
+
+	#year-name{
+		width: 75%;
+		margin: 0 auto;
+		height: 23px;
+		background-color: #eee;
+		border-bottom: 1.5px inset #ddd;
+	}
+
+	#year-name span{
+		line-height: 23px;
+	}
+
+	#month-name{
+		width: 100%;
+		height: 25.5px;
+		background-color: #eee;
+	}
+
+	#month-name span{
+		line-height: 25.5px;
+	}
+	.select-month-div{
+		width: 65px;
+		height: 175px;
+		margin: 0 auto;
+		z-index: 1;
+		border: 1px solid black;
+		border-radius: 5px;
+		background-color: #fff;
+
+	}
+	.selected{
+
+		background-color: red;
+	}
+</style>
+</head>
+<body>
+
+<input type="text" id="recebeDatePicker">
+
+</div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+
+datepicker = new datepicker({
+					id: "teste",
+					name: 'datepicker',
+					valueField: "recebeDatePicker",
+					hasButton: false,
+					dependentField: false
+
+	});
+
+datepicker.output();
+
+console.log(datepicker.constructor);
+
+/*console.log(daysArr);
+
+document.write(" | firstWeekDay = ");
+document.write(firstWeekDay);
+document.write(" | ");
+document.write(currentDate.getDate());
+document.write(" | ");
+document.write(monthNames[currentDate.getMonth()]);
+document.write(" | ");
+document.write(currentDate.getFullYear());
+document.write(" | maxDayThisMonth = ");
+document.write(maxDayThisMonth);
+document.write(" | maxDayLastMonth = ");
+document.write(maxDayLastMonth);*/
+</script>
