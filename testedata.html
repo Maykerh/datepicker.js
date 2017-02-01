@@ -87,7 +87,8 @@
 		border-bottom: 1.5px inset #ddd;
 	}
 
-	#year-name span{
+	#year-name span, #year-name i{
+		cursor: pointer;
 		line-height: 23px;
 	}
 
@@ -100,20 +101,44 @@
 	#month-name span{
 		line-height: 25.5px;
 	}
-	.select-month-div{
-		width: 65px;
+	.select-year-div{
+		width: 55px;
 		height: 175px;
 		margin: 0 auto;
+		align-self: center;
 		z-index: 1;
 		border: 1px solid black;
 		border-radius: 5px;
 		background-color: #fff;
-
+		overflow-x: hidden;
+		overflow-y: scroll;
+	}	
+	.select-year-div table{
+		margin: 0 auto;
 	}
-	.selected{
+	.select-year-div tr td{
+		cursor: pointer;
+	}
+	.select-year-div::-webkit-scrollbar{
+		width: 5px;
+	}
+	.select-year-div::-webkit-scrollbar-thumb{
+		background-color: #eee;
+		border-radius: 10px;
+		border: 1px solid black;
+	}
 
+	/*.select-year-div::-webkit-scrollbar-track-piece{
 		background-color: red;
+	}*/
+	.selected{
+		background-color: #ddd;
 	}
+
+	.day-another-month{
+		color: #a1a1a1;
+	}
+
 </style>
 </head>
 <body>
@@ -137,8 +162,6 @@ datepicker = new datepicker({
 });
 
 datepicker.output();
-
-console.log(datepicker.constructor);
 
 /*console.log(daysArr);
 

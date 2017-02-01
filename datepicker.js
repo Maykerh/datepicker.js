@@ -3,7 +3,7 @@ datepicker = function(obj){
 	this.id; 						//id do datepicker
 	this.valueField; 				//Campo de texto que receberá a data e o action de render do datepicker
 	this.hasButton = false; 		//Seta se terá botão com ícone de calendário ao lado do text field // Não implementado
-	this.dependentField = false 	//Seta se o campo de data depende de outro, se sim, a data deste campo não pode ser menor que o qual ele depende // Não implementado
+	this.dependentField = false 	// se passado um id, seta que o campo de data depende de outro, se sim, a data deste campo não pode ser menor que o qual ele depende // Não implementado
 	this.name; 						//nome do objeto instanciado do datepicker
 	this.backgroundColor = "#eee"; 	//Cor de fundo do gráfico; //Não implementado
 	this.secondaryColor = "blue"; 	//Cor do cabeçalho e de item ativo //Não implementado
@@ -15,6 +15,8 @@ datepicker = function(obj){
 	this.date; 						// guarda a ultima data selecionada no formato dd/mm/yyy
 	this.dateFormat = "dd/mm/yyyy"; //formato da data
 	this.closeOnSelect = false; 	//define se o datepicker se fecha ao selecionar uma data
+	this.disablePastDates = false //se true habilita somente datas futuras. //não implementado
+	this.disableFutureYears = false //se true habilita somente datas passadas //não implementado
 
 	//implementar fechamento da div ao clicar fora
 	//implementar div de seleção de ano ao clicar sobre o ano;
@@ -103,7 +105,7 @@ datepicker = function(obj){
 						divYearName.appendChild(spanYearName);
 
 						var iconDown = document.createElement('i');
-						iconDown.innerHTML = "•";
+						iconDown.innerHTML = " -";
 						iconDown.setAttribute("onclick", this.name+".renderYearsDiv()")
 						divYearName.appendChild(iconDown);
 
@@ -149,12 +151,12 @@ datepicker = function(obj){
 				var daysTr = [];
 				var daysTd = [];
 
+				var daysArr = this.generateDaysArr(year, month)
+
 				for(var i = 0; i < 6; i++){
 
 					daysTr[i] = document.createElement('tr');
 					tableDays.appendChild(daysTr[i]);
-
-					var daysArr = this.generateDaysArr(year, month);
 
 					for(var j = (i*7); j < ((i+1)*7); j++){
 
@@ -164,16 +166,16 @@ datepicker = function(obj){
 
 						dayNumber = this.getOnlyDayNumber(daysArr[j]);
 						isActualMonth = this.isActualMonth(daysArr[j]);
-						isActualDate = this.isActualDate(daysArr[j]);
+						isLastSelectedDate = this.isLastSelectedDate(daysArr[j]);
 
-						if(dayNumber == this.getActualDay() && isActualDate)
-							daysTd[j].className = "selected";
+						if(isLastSelectedDate)
+							daysTd[j].className += " selected";
 
 						if(!isActualMonth)
-							daysTd[j].style.color = "#a1a1a1";
+							daysTd[j].className += " day-another-month";
 
 						daysTd[j].innerHTML = dayNumber;
-						daysTd[j].setAttribute("onclick", this.name+".selectDate(this.value)");
+						daysTd[j].setAttribute("onclick", this.name+".selectDate(this)");
 
 						daysTr[i].appendChild(daysTd[j]);
 					}
@@ -182,23 +184,71 @@ datepicker = function(obj){
 
 	this.renderYearsDiv = function(){
 
+		objectRendered = document.getElementById('select-year-div');
+
+		if(objectRendered != null){
+			this.destroyYearsDiv();
+			return;
+		}
+
 		divDatepicker = document.getElementById('datepicker');
 		divYearName = document.getElementById('year-name');
 
 		selectYearDiv = document.createElement('div');
 		selectYearDiv.id = "select-year-div";
-		selectYearDiv.className = "select-month-div";
+		selectYearDiv.className = "select-year-div";
 		selectYearDiv.style.position  = "element(year-name)";
 		selectYearDiv.style.transform = "translateY(-220px)";
 		divDatepicker.appendChild(selectYearDiv);
 
 			selectYearTable = document.createElement('table');
-			selectYearTable.id = "select-year-table";
 			selectYearDiv.appendChild(selectYearTable);
 
-		 ///////////continuar aqui criando a div do ano////////
+				var selectYearTr = [];
+				var selectYearTd = [];
+				var yearsList = this.getYearsFromNow();
 
-		
+				for( var key in yearsList){
+
+					selectYearTr[key] = document.createElement('tr');
+					if(yearsList[key] == this.getActualYear())
+			 			selectYearTr[key].className += " selected";
+					selectYearTable.appendChild(selectYearTr[key]);
+
+					selectYearTd[key] = document.createElement('td');
+			 		selectYearTd[key].innerHTML = yearsList[key];
+			 		selectYearTd[key].value = yearsList[key];
+			 		selectYearTd[key].setAttribute("onclick", this.name+".setActualYear(this.value); "+this.name+".destroyYearsDiv()");
+			 		selectYearTr[key].appendChild(selectYearTd[key]);
+			 	}
+
+		 //adicionar scroll automatica para abrir a div de ano direto no ano selecionado
+	}
+
+	this.destroyYearsDiv = function(){
+
+		divDatepicker = document.getElementById('datepicker');
+		yearsDiv = document.getElementById("select-year-div");
+		divDatepicker.removeChild(yearsDiv);
+
+		this.destroy();
+		this.render();
+	}
+
+	this.getYearsFromNow = function(){
+
+		actualYear = this.getActualYear();
+		yearsList = [];
+
+		minYear = parseInt(actualYear) - 100;
+		maxYear = parseInt(actualYear) + 100;
+
+		for(var i = minYear; i <= maxYear; i++){
+
+			yearsList[i] = i;
+		}
+
+		return yearsList;
 	}
 
 	this.setDate = function(date){
@@ -212,21 +262,23 @@ datepicker = function(obj){
 	}
 
 	/*
-	 * Função que verifica se o dia que está sendo renderizado é o ultimo selecionado, utilizado para manter a seleção no ultimo dia clicado
+	 * Função que verifica se a data que está sendo renderizado é o ultimo selecionado, utilizado para manter a seleção no ultimo dia clicado
+	 * @param: 
 	 */
-	this.isActualDate = function(date){
+	this.isLastSelectedDate = function(date){
 
 		if(date == this.getDate())
 			return true;
-		else
-			return false
+			
+		return false
 	}	
+
 	/*
 	 * Função que verifica se o dia que está sendo renderizado pertence ao mês atual, utilizada para esmaecer os dias que aparecem no calendário mas não são do mes em questão
 	 */
 	this.isActualMonth = function(date){
 
-		date = date.split(',');
+		date = date.split('/');
 
 		if(date[1] == this.getActualMonth())
 			return true;
@@ -236,10 +288,16 @@ datepicker = function(obj){
 	}
 	this.getOnlyDayNumber = function(date){
 
-		day = date.split(",");
+		day = date.split("/");
 
 		return day[2];
 	}
+
+	/*
+	 * Função para setar o formato em que a data será exibida    
+	 * @param string dd/mm/yyyy
+	 * @param string mm/yyyy
+	 */
 	this.setDateFormat = function(format){
 
 		this.dateFormat = format;
@@ -251,18 +309,21 @@ datepicker = function(obj){
 	}
 
 	/*
-	 * Função para formatar a data de acordo com o formato escolhido no parametro dateFormat
-	 * Opções:
-	 *    "dd/mm/yyyy"
-	 *	  "mm/yyyy"
+	 * Função para formatar a data de acordo com o formato escolhido no parametro dateFormat.
+	 * @param string de data no formato yyyy/mm/dd
+	 * @return string
 	 */
-	this.formatDate = function(year, month, day = null){
+	this.formatDate = function(dateString){
 
+		dateArr = dateString.split("/");
+		day = dateArr[2];
+		month = parseInt(dateArr[1])+1;
+		year = dateArr[0];
 		format = this.getDateFormat();
 
 		if(day.length == 1)
 			day = "0" + day;
-		if(month.length == 1)
+		if(String(month).length == 1)
 		    month = "0" + month;
 
 		switch( format ){
@@ -274,24 +335,26 @@ datepicker = function(obj){
 				date = month + "/" + year;
 				break;
 			default:
-				date = "incorrect dateFormat";
+				date = "Incorrect date format!";
 		}
 
 		return date;
 	}
 
-	this.selectDate = function(date){
+	this.selectDate = function(e){
 
-		this.setDate(date);
+		date = e.value;
 
-		date = date.split(",");
+		dateArr = date.split("/");
 
-		this.setActualDay(date[2]);
-		this.setActualMonth(date[1]);
-		this.setActualYear(date[0]);
+		this.setActualDay(dateArr[2]);
+		this.setActualMonth(dateArr[1]);
+		this.setActualYear(dateArr[0]);
        	
-		date = this.formatDate(date[0], date[1], date[2]);
+  		this.setDate(date);
 
+		date = this.formatDate(date);
+		
        	document.getElementById(this.valueField).value = date;
 
        	this.destroy();
@@ -342,7 +405,7 @@ datepicker = function(obj){
 		year = this.getActualYear();
 		month = this.getActualMonth();
 
-		newDate = new Date(year, month + add);
+		newDate = new Date(year, (parseInt(month) + add) );
 
 		newMonth = newDate.getMonth();
 		newYear = newDate.getFullYear();
@@ -392,6 +455,7 @@ datepicker = function(obj){
 		maxDayThisMonth = maxDayThisMonth.getDate();
 
 		dateLastMonth = new Date(currentYear, currentMonth, 0);
+
 		maxDayLastMonth = dateLastMonth.getDate();
 		lastMonth       = dateLastMonth.getMonth();
 		lastYear        = dateLastMonth.getFullYear();
@@ -413,21 +477,21 @@ datepicker = function(obj){
 
 		for(var i = 0; i < maxDayThisMonth; i++ ){ // Preenche o array com os dias do mes atual, deixando em branco os indices dos dias do mes anterior e posterior
 
-			daysArr[i+index] = year + "," + month + "," + dayStart + ",";
+			daysArr[i+index] = year + "/" + month + "/" + dayStart;
 
 			dayStart++;
 		}
 
 		for(var i = index-1; i >= 0; i-- ){ // Preenche o array com os dias do mes anterior;
 
-			daysArr[i] = lastYear + "," + lastMonth + "," + maxDayLastMonth;
+			daysArr[i] = lastYear + "/" + lastMonth + "/" +maxDayLastMonth;
 			maxDayLastMonth--;
 		}
 
 		dayStart = 1;
 		for(var i = daysArr.length; i < 42; i++){ // Preenche o array com os dias do mes posterior - 42 é o número de posições do calendário (7 dias x 6 linhas);
 
-			daysArr[i] = nextYear + "," + nextMonth + "," + dayStart;
+			daysArr[i] = nextYear + "/" + nextMonth + "/" + dayStart;
 
 			dayStart ++;
 		}
@@ -444,7 +508,7 @@ datepicker = function(obj){
 		if( date == null || date == '' || typeof(date) == undefined ){
 
 			date = new Date();
-
+			
 			this.setActualDay( date.getDate() );
 			this.setActualMonth( date.getMonth() );
 			this.setActualYear( date.getFullYear() );
@@ -452,9 +516,16 @@ datepicker = function(obj){
 
 			date = date.split('/');
 
-			this.setActualDay( date[0] );
-			this.setActualMonth( date[1] );
-			this.setActualYear( date[2] );
+			if(this.dateFormat == "mm/yyyy"){
+				this.setActualMonth( date[0] );
+				this.setActualYear( date[1] );
+			}else{
+				this.setActualDay( date[0] );
+				this.setActualMonth( date[1] );
+				this.setActualYear( date[2] );
+			}
 		}
 	}
+
+
 }
