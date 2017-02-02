@@ -2,11 +2,7 @@ datepicker = function(obj){
 
 	this.id; 						//id do datepicker
 	this.valueField; 				//Campo de texto que receberá a data e o action de render do datepicker
-	this.hasButton = false; 		//Seta se terá botão com ícone de calendário ao lado do text field // Não implementado
-	this.dependentField = false 	// se passado um id, seta que o campo de data depende de outro, se sim, a data deste campo não pode ser menor que o qual ele depende // Não implementado
 	this.name; 						//nome do objeto instanciado do datepicker
-	this.backgroundColor = "#eee"; 	//Cor de fundo do gráfico; //Não implementado
-	this.secondaryColor = "blue"; 	//Cor do cabeçalho e de item ativo //Não implementado
 	this.weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 	this.monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 	this.actualDay; 				// dia atual selecionado
@@ -15,13 +11,7 @@ datepicker = function(obj){
 	this.date; 						// guarda a ultima data selecionada no formato dd/mm/yyy
 	this.dateFormat = "dd/mm/yyyy"; //formato da data
 	this.closeOnSelect = false; 	//define se o datepicker se fecha ao selecionar uma data
-	this.disablePastDates = false //se true habilita somente datas futuras. //não implementado
-	this.disableFutureYears = false //se true habilita somente datas passadas //não implementado
-
-	//implementar fechamento da div ao clicar fora
-	//implementar div de seleção de ano ao clicar sobre o ano;
-
-	/////// arrumar um jeito de validar estes parâmetros ////////
+	
 	this.setUserOptions = function(){
 
 		for(var key in obj){ 
@@ -39,6 +29,13 @@ datepicker = function(obj){
 
 		field = document.getElementById(this.valueField);
 		field.setAttribute("onclick",this.name+".render()");
+
+		var fileref = document.createElement("link");
+		fileref.rel = "stylesheet";
+		fileref.type = "text/css";
+		fileref.href = "datepicker.css";
+		document.getElementsByTagName("head")[0].appendChild(fileref);
+
 		this.getFieldDate();
 	}
 
@@ -67,19 +64,27 @@ datepicker = function(obj){
 		month = this.getActualMonth();
 		year = this.getActualYear();
 
+		field = document.getElementById(this.valueField);
+
+		
+
 		var divDatepicker       	  = document.createElement('div');
 		divDatepicker.className 	  = "datepicker";
 		divDatepicker.id        	  = "datepicker";
-		divDatepicker.style.position  = "element("+this.valueField+")";
-		divDatepicker.style.transform = "translateY(0)";
+		this.definePosition(field, divDatepicker);
 		document.body.appendChild(divDatepicker);
+
+			var divArrow       	  = document.createElement('div');
+			divArrow.className 	  = "arrow";
+			divArrow.id        	  = "arrow";
+			divDatepicker .appendChild(divArrow);
 
 			var divYearMonth       = document.createElement('div');
 			divYearMonth.className = "year-month";
 			divYearMonth.id        = "year-month";
 			divDatepicker.appendChild(divYearMonth);
 
-				var divButtonBack       = document.createElement('button');
+				var divButtonBack       = document.createElement('div');
 				divButtonBack.className = "month-direction";
 				divButtonBack.id        = "button-monthbackward";
 				divButtonBack.setAttribute("onclick", this.name+".changeMonth(-1)");
@@ -91,7 +96,6 @@ datepicker = function(obj){
 					divButtonBack.appendChild(iconButtonBack);
 
 				var divActualMonth       = document.createElement('div');
-				divActualMonth.className = "month-direction";
 				divActualMonth.id        = "header";
 				divYearMonth.appendChild(divActualMonth);
 
@@ -99,15 +103,24 @@ datepicker = function(obj){
 					divYearName.id = "year-name";
 					divActualMonth.appendChild(divYearName);
 
-						var spanYearName = document.createElement('span');
-						spanYearName.id = "span-year-name";
-						spanYearName.innerHTML = this.getActualYear();
-						divYearName.appendChild(spanYearName);
+						var yearNameButton = document.createElement('div');
+						yearNameButton.className = "year-name-button";
+						yearNameButton.id = "year-name-button";
+						yearNameButton.setAttribute("onclick", this.name+".renderYearsDiv()");
+						divYearName.appendChild(yearNameButton);
 
-						var iconDown = document.createElement('i');
-						iconDown.innerHTML = " -";
-						iconDown.setAttribute("onclick", this.name+".renderYearsDiv()")
-						divYearName.appendChild(iconDown);
+							var spanYearName = document.createElement('span');
+							spanYearName.id = "span-year-name";
+							spanYearName.innerHTML = this.getActualYear();
+							
+							yearNameButton.appendChild(spanYearName);
+
+
+								var iconDown = document.createElement('div');
+								iconDown.innerHTML = "";
+								iconDown.className = "month-icon-down";
+								iconDown.id = "month-icon";
+								spanYearName.appendChild(iconDown);
 
 					var divMonthName = document.createElement('div');
 					divMonthName.id = "month-name";
@@ -118,7 +131,7 @@ datepicker = function(obj){
 						spanMonthName.innerHTML = this.getMonthName();
 						divMonthName.appendChild(spanMonthName);
  
-				var divButtonFrw       = document.createElement('button');
+				var divButtonFrw       = document.createElement('div');
 				divButtonFrw.className = "month-direction";
 				divButtonFrw.id        = "button-monthforward";
 				divButtonFrw.setAttribute("onclick", this.name+".changeMonth(1)");
@@ -185,12 +198,17 @@ datepicker = function(obj){
 	this.renderYearsDiv = function(){
 
 		objectRendered = document.getElementById('select-year-div');
+		divIconDown = document.getElementById('month-icon');
+		yearNameButton = document.getElementById("year-name-button");
 
 		if(objectRendered != null){
+			divIconDown.className = "month-icon-down";
 			this.destroyYearsDiv();
 			return;
 		}
 
+		yearNameButton.className += " year-name-button-selected";
+		divIconDown.className = "month-icon-up";
 		divDatepicker = document.getElementById('datepicker');
 		divYearName = document.getElementById('year-name');
 
@@ -198,7 +216,7 @@ datepicker = function(obj){
 		selectYearDiv.id = "select-year-div";
 		selectYearDiv.className = "select-year-div";
 		selectYearDiv.style.position  = "element(year-name)";
-		selectYearDiv.style.transform = "translateY(-220px)";
+		selectYearDiv.style.transform = "translateY(-216px)";
 		divDatepicker.appendChild(selectYearDiv);
 
 			selectYearTable = document.createElement('table');
@@ -211,8 +229,10 @@ datepicker = function(obj){
 				for( var key in yearsList){
 
 					selectYearTr[key] = document.createElement('tr');
-					if(yearsList[key] == this.getActualYear())
+					if(yearsList[key] == this.getActualYear()){
+						scrollSize = key * 20;
 			 			selectYearTr[key].className += " selected";
+			 		}
 					selectYearTable.appendChild(selectYearTr[key]);
 
 					selectYearTd[key] = document.createElement('td');
@@ -222,7 +242,19 @@ datepicker = function(obj){
 			 		selectYearTr[key].appendChild(selectYearTd[key]);
 			 	}
 
-		 //adicionar scroll automatica para abrir a div de ano direto no ano selecionado
+		document.getElementById('select-year-div').scrollTop = scrollSize - 80;
+	}
+
+	this.definePosition = function(objToFind, objToRender) {
+
+		posleft = objToFind.offsetLeft;
+		postop = objToFind.offsetTop;
+		height = objToFind.offsetHeight;
+
+		objToRender.style.position = "absolute";
+		objToRender.style.left = posleft + "px";
+		objToRender.style.top = postop + height + "px";
+
 	}
 
 	this.destroyYearsDiv = function(){
@@ -237,15 +269,13 @@ datepicker = function(obj){
 
 	this.getYearsFromNow = function(){
 
-		actualYear = this.getActualYear();
+		date = new Date;
+		startYear = date.getFullYear() - 100;
 		yearsList = [];
 
-		minYear = parseInt(actualYear) - 100;
-		maxYear = parseInt(actualYear) + 100;
+		for(var i = 0; i <= 200; i++){
 
-		for(var i = minYear; i <= maxYear; i++){
-
-			yearsList[i] = i;
+			yearsList[i] = startYear++;
 		}
 
 		return yearsList;
@@ -527,5 +557,18 @@ datepicker = function(obj){
 		}
 	}
 
-
+	this.output();
 }
+
+/***************TODO******************/
+
+// Quando o formato de data for "mm/yyyy" no lugar dos dias, renderizar botões com os meses
+// Parametro para indicar a posição em que o calendario será renderizado em relação ao field, (bottom/right, bottom/left, top/right, top/left);
+// implementar fechamento do calendario ao clicar fora
+// implementar fechamento da div de seleção de ano ao clicar fora
+// Parametro para informar se deve inserir um botão de calendario anexado ao field
+// Parametro para setar se o campo de data depende de outro, se sim, a data deste campo não pode ser menor que o qual ele depende 
+// Parametros para personalizar as cores;
+// Parametros para desabilitar datas passadas ou futuras;
+// Parametros para informar o ano máximo e mínimo que serão exibidos
+// Adicionar efeitos de transição ao renderizar;

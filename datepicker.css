@@ -1,0 +1,205 @@
+	.datepicker{
+		width: 250px;
+		height: 250px;
+		background-color: #fff;
+		border: 1px solid #7f8c8d;
+		border-radius: 5px;
+		margin-top: 10px;
+		color: #1d1d1d;
+		font-family: sans-serif;
+		font-size: 14px;
+		box-shadow: 5px 7px 14px -6px rgba(0,0,0,0.4);
+		position: absolute;
+	}
+	
+	.year-month{
+		width: 100%;
+		height: 50px;
+		border-top-right-radius: 5px;
+		display: flex;
+	}
+
+	#button-monthforward{
+		border-top-right-radius: 5px
+
+	}
+
+	#button-monthbackward{
+		border-top-left-radius: 5px;
+		padding-left: 3px;
+	}
+
+	.month-direction{
+		width: 14%;
+		height: 50px;
+		background-color: #eee;
+		border: none;
+	}
+
+	.direction-symbol{
+		line-height: 50px;
+		align-content: center;
+		padding: 1px 6px 1px 6px;
+		font-weight: bolder;
+		font-family: Helvetica;
+		cursor: pointer;
+	}
+
+	.direction-symbol:hover{
+		background-color: #fff;
+		border-radius: 10px;
+	}
+
+	#header{
+		width: 72%;
+		background-color: #eee;
+		text-align: center;
+		font-weight: bolder;
+	}
+
+	#days{
+		width: 100%;
+		background-color: #fff;
+	}
+
+	#days th{
+		height: 25px;
+	}
+
+	.day-button{
+		width: 28px;
+		height: 25px;
+		margin: 3px;
+		background-color: white;
+		text-align: center;
+		line-height: 25px;
+		border-radius: 5px;
+	}
+
+	.day-button:hover{
+		background-color: #ddd;
+	}
+
+	.active{
+		background-color: blue !important;
+	}
+
+	#year-name{
+		width: 75%;
+		margin: 0 auto;
+		height: 23px;
+		background-color: #eee;
+		border-bottom: 1.5px inset #ddd;
+	}
+
+	#year-name span, #year-name i{
+		cursor: pointer;
+		line-height: 23px;
+	}
+
+	#month-name{
+		width: 100%;
+		height: 25.5px;
+		background-color: #eee;
+	}
+
+	#month-name span{
+		line-height: 25.5px;
+	}
+
+	.select-year-div{
+		width: 60px;
+		height: 175px;
+		margin: 0 96px;
+		align-self: center;
+		z-index: 2;
+		border: 1px solid #ddd;
+		border-top: none;
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+		background-color: #fff;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		box-shadow: 5px 7px 14px -6px rgba(0,0,0,0.4);
+		font-family: sans-serif;
+		font-size: 14px;
+	}
+
+	.select-year-div table{
+		margin: 0 0 0 6px;
+		width: 45px;
+	}
+
+	.select-year-div tr td{
+		cursor: pointer;
+		text-align: center;
+	}
+
+	.select-year-div::-webkit-scrollbar{
+		width: 5px;
+	}
+
+	.select-year-div::-webkit-scrollbar-thumb{
+		background-color: #eee;
+		border-radius: 10px;
+		border: 1px solid #7f8c8d;
+	}
+
+	.select-year-div table tr td{
+		border-radius: 20px;
+	}
+
+	.selected{
+		background-color: #ddd;
+	}
+
+	.day-another-month{
+		color: #a1a1a1;
+	}
+
+	.month-icon-down {
+		position: relative;
+		left: 61px;
+		bottom: 13px;
+		width: 0; 
+	    height: 0; 
+	    border-left: 4px solid transparent;
+	    border-right: 4px solid transparent;
+	    border-top: 4px solid #1d1d1d;
+	}
+
+	.month-icon-up {
+		position: relative;
+		left: 61px;
+		bottom: 13px;
+		width: 0; 
+	    height: 0; 
+	    border-left: 4px solid transparent;
+	    border-right: 4px solid transparent;
+	    border-bottom: 4px solid #1d1d1d;
+	}
+
+	.year-name-button{
+		width: 80px;
+		height: 23px;
+		margin: 0 auto;
+		border-radius: 20px;
+	}
+
+	.year-name-button:hover{
+		background-color: #fff;
+	}
+
+	.year-name-button-selected{
+		background-color: #fff;
+	}
+
+	.arrow {
+		position: absolute;
+		left: 10px;
+		top: -15px;
+		clip-path: polygon(50% 50%, 0% 100%, 100% 100%);
+	    background-color: #eee;
+	    width: 10px;
+	    height: 15px;
+	}
