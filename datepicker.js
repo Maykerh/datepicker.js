@@ -5,12 +5,17 @@ datepicker = function(obj){
 	this.name; 						//nome do objeto instanciado do datepicker
 	this.weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 	this.monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+	this.monthNamesAbbr = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 	this.actualDay; 				// dia atual selecionado
 	this.actualMonth; 				//Numero do mes em exibição na tela;
 	this.actualYear; 				// ano em exibição na tela
-	this.date; 						// guarda a ultima data selecionada no formato dd/mm/yyy
+	this.date; 						// guarda a ultima data selecionada no formato yyyy/mm/dd
 	this.dateFormat = "dd/mm/yyyy"; //formato da data
-	this.closeOnSelect = false; 	//define se o datepicker se fecha ao selecionar uma data
+	this.closeOnSelect = true; 	//define se o datepicker se fecha ao selecionar uma data
+	this.hideDays = false; // Se true exibe botões com nome dos mêses no lugar dos dias.
+	this.xPos = 'left'; // Define a posição horizontal em relação ao text field - "right" ou "left"
+	this.yPos = 'bottom'; // Define a posição vertical em relação ao text field - "top" ou "bottom"
+	this.hasButton = false; // Define se erá renderizado um botão de calendário ao lado do text field;
 	
 	this.setUserOptions = function(){
 
@@ -66,17 +71,23 @@ datepicker = function(obj){
 
 		field = document.getElementById(this.valueField);
 
-		
-
 		var divDatepicker       	  = document.createElement('div');
 		divDatepicker.className 	  = "datepicker";
 		divDatepicker.id        	  = "datepicker";
-		this.definePosition(field, divDatepicker);
 		document.body.appendChild(divDatepicker);
 
 			var divArrow       	  = document.createElement('div');
 			divArrow.className 	  = "arrow";
 			divArrow.id        	  = "arrow";
+			if(this.xPos == 'right')
+				divArrow.style.left = "230px";
+			if(this.yPos == "top"){
+				divArrow.style.top = "244px";
+				divArrow.style.clipPath = "polygon(50% 50%, 0% 0%, 100% 0%";
+			}
+
+			console.log(divArrow.style);
+	
 			divDatepicker .appendChild(divArrow);
 
 			var divYearMonth       = document.createElement('div');
@@ -142,57 +153,117 @@ datepicker = function(obj){
 					iconButtonFrw.innerHTML = ">>";
 					divButtonFrw.appendChild(iconButtonFrw);
 
-			var tableDays         = document.createElement('table');
-			tableDays.id          = "days";
-			tableDays.cellSpacing = 0;
-			divDatepicker.appendChild(tableDays);
+		if(this.hideDays)
+			this.renderMonthsDiv(divDatepicker);
+		else
+			this.renderDaysDiv(divDatepicker);
 
-				var daysHead   = document.createElement('thead');
-				tableDays.appendChild(daysHead);
+		this.definePosition(field, divDatepicker);
+	}
 
-					var daysHeadTr = document.createElement('tr');
-					daysHead.appendChild(daysHeadTr);
-						
-						var th = [];
+	this.renderDaysDiv = function(divDatepicker){
 
-						for(var i = 0; i < this.weekDays.length; i++){
-							th[i] = document.createElement('th');
-							th[i].innerHTML = this.weekDays[i];
-							daysHeadTr.appendChild(th[i]);
-						}
+		var tableDays         = document.createElement('table');
+		tableDays.id          = "days";
+		tableDays.cellSpacing = 0;
+		divDatepicker.appendChild(tableDays);
 
-				var daysTr = [];
-				var daysTd = [];
+			var daysHead   = document.createElement('thead');
+			tableDays.appendChild(daysHead);
 
-				var daysArr = this.generateDaysArr(year, month)
+				var daysHeadTr = document.createElement('tr');
+				daysHead.appendChild(daysHeadTr);
+					
+					var th = [];
 
-				for(var i = 0; i < 6; i++){
-
-					daysTr[i] = document.createElement('tr');
-					tableDays.appendChild(daysTr[i]);
-
-					for(var j = (i*7); j < ((i+1)*7); j++){
-
-						daysTd[j]       = document.createElement('td');
-						daysTd[j].className = "day-button";
-						daysTd[j].value = daysArr[j];
-
-						dayNumber = this.getOnlyDayNumber(daysArr[j]);
-						isActualMonth = this.isActualMonth(daysArr[j]);
-						isLastSelectedDate = this.isLastSelectedDate(daysArr[j]);
-
-						if(isLastSelectedDate)
-							daysTd[j].className += " selected";
-
-						if(!isActualMonth)
-							daysTd[j].className += " day-another-month";
-
-						daysTd[j].innerHTML = dayNumber;
-						daysTd[j].setAttribute("onclick", this.name+".selectDate(this)");
-
-						daysTr[i].appendChild(daysTd[j]);
+					for(var i = 0; i < this.weekDays.length; i++){
+						th[i] = document.createElement('th');
+						th[i].innerHTML = this.weekDays[i];
+						daysHeadTr.appendChild(th[i]);
 					}
+
+			var daysTr = [];
+			var daysTd = [];
+
+			var daysArr = this.generateDaysArr(year, month)
+
+			for(var i = 0; i < 6; i++){
+
+				daysTr[i] = document.createElement('tr');
+				tableDays.appendChild(daysTr[i]);
+
+				for(var j = (i*7); j < ((i+1)*7); j++){
+
+					daysTd[j]       = document.createElement('td');
+					daysTd[j].className = "date-button";
+					daysTd[j].value = daysArr[j];
+
+					dayNumber = this.getOnlyDayNumber(daysArr[j]);
+					isActualMonth = this.isActualMonth(daysArr[j]);
+					isLastSelectedDate = this.isLastSelectedDate(daysArr[j]);
+
+					if(isLastSelectedDate)
+						daysTd[j].className += " selected";
+
+					if(!isActualMonth)
+						daysTd[j].className += " day-another-month";
+
+					daysTd[j].innerHTML = dayNumber;
+					daysTd[j].setAttribute("onclick", this.name+".selectDate(this)");
+
+					daysTr[i].appendChild(daysTd[j]);
 				}
+			}
+	}
+
+	this.renderMonthsDiv = function(divDatepicker){
+
+		var tableMonths         = document.createElement('table');
+		tableMonths.id          = "months";
+		tableMonths.cellSpacing = 0;
+		divDatepicker.appendChild(tableMonths);
+		divDatepicker.style.width = "190px";
+
+			/*var daysHead   = document.createElement('thead');
+			tableDays.appendChild(daysHead);
+
+				var daysHeadTr = document.createElement('tr');
+				daysHead.appendChild(daysHeadTr);
+					
+					var th = [];
+
+					for(var i = 0; i < this.weekDays.length; i++){
+						th[i] = document.createElement('th');
+						th[i].innerHTML = this.weekDays[i];
+						daysHeadTr.appendChild(th[i]);
+					}
+			*/
+			var monthsTr = [];
+			var monthsTd = [];
+
+			for(var i = 0; i < 3; i++){
+
+				monthsTr[i] = document.createElement('tr');
+				tableMonths.appendChild(monthsTr[i]);
+
+				for(var j = (i*4); j < ((i+1)*4); j++){
+
+					monthsTd[j]       = document.createElement('td');
+					monthsTd[j].className = "date-button";
+					monthsTd[j].value = this.getActualYear() + "/" + j + "/01" ;
+
+					isLastSelectedDate = this.isLastSelectedDate( monthsTd[j].value );
+
+					if(isLastSelectedDate)
+						monthsTd[j].className += " selected";
+
+					monthsTd[j].innerHTML = this.monthNamesAbbr[j];
+					monthsTd[j].setAttribute("onclick", this.name+".selectDate(this)");
+
+					monthsTr[i].appendChild(monthsTd[j]);
+				}
+			}
+
 	}
 
 	this.renderYearsDiv = function(){
@@ -215,8 +286,13 @@ datepicker = function(obj){
 		selectYearDiv = document.createElement('div');
 		selectYearDiv.id = "select-year-div";
 		selectYearDiv.className = "select-year-div";
-		selectYearDiv.style.position  = "element(year-name)";
-		selectYearDiv.style.transform = "translateY(-216px)";
+	
+		if(this.hideDays){//arrumar aqui para transform
+			this.definePosition(yearNameButton, selectYearDiv, "margin: 0 65px; margin-top: -137px");
+		}else{
+			selectYearDiv.style.position  = "element(year-name)";
+			selectYearDiv.style.transform = "translateY(-216px)";
+		}
 		divDatepicker.appendChild(selectYearDiv);
 
 			selectYearTable = document.createElement('table');
@@ -242,19 +318,46 @@ datepicker = function(obj){
 			 		selectYearTr[key].appendChild(selectYearTd[key]);
 			 	}
 
+		//Scroll automático ao abrir a opção de anos, de modo que o ano selecionado fique posicionado no meio da div
 		document.getElementById('select-year-div').scrollTop = scrollSize - 80;
 	}
 
-	this.definePosition = function(objToFind, objToRender) {
+	this.definePosition = function(objToFind, objToRender, style = null) {
 
 		posleft = objToFind.offsetLeft;
 		postop = objToFind.offsetTop;
 		height = objToFind.offsetHeight;
+		width = objToFind.offsetWidth;
+		myWidth = objToRender.offsetWidth;
+		myHeight = objToRender.offsetHeight;
 
+		if(this.xPos == 'left'){
+
+			objToRender.style.left = posleft + "px";
+		}else{
+
+			objToRender.style.left = ((posleft - myWidth) + width) + "px";
+		}
+
+		if(this.yPos == 'bottom'){
+
+			objToRender.style.top = postop + height + "px";
+		}else{
+
+			objToRender.style.top = ((postop - myHeight) - height) + "px";
+		}
 		objToRender.style.position = "absolute";
-		objToRender.style.left = posleft + "px";
-		objToRender.style.top = postop + height + "px";
 
+		if(style != null)
+			objToRender.style += "; " + style
+	}
+
+	this.renderButton = function(){
+
+		var calendarButton = document.createElement('div');
+		calendarButton.id = "caledar-button";
+
+		//continuar aqui
 	}
 
 	this.destroyYearsDiv = function(){
@@ -292,7 +395,7 @@ datepicker = function(obj){
 	}
 
 	/*
-	 * Função que verifica se a data que está sendo renderizado é o ultimo selecionado, utilizado para manter a seleção no ultimo dia clicado
+	 * Função que verifica se a data que está sendo renderizada é a ultima selecionada, utilizado para manter a seleção no ultimo dia clicado
 	 * @param: 
 	 */
 	this.isLastSelectedDate = function(date){
@@ -324,44 +427,43 @@ datepicker = function(obj){
 	}
 
 	/*
-	 * Função para setar o formato em que a data será exibida    
-	 * @param string dd/mm/yyyy
-	 * @param string mm/yyyy
-	 */
-	this.setDateFormat = function(format){
-
-		this.dateFormat = format;
-	}
-
-	this.getDateFormat = function(){
-
-		return this.dateFormat;
-	}
-
-	/*
 	 * Função para formatar a data de acordo com o formato escolhido no parametro dateFormat.
 	 * @param string de data no formato yyyy/mm/dd
 	 * @return string
 	 */
 	this.formatDate = function(dateString){
 
-		dateArr = dateString.split("/");
-		day = dateArr[2];
-		month = parseInt(dateArr[1])+1;
-		year = dateArr[0];
-		format = this.getDateFormat();
-
-		if(day.length == 1)
-			day = "0" + day;
-		if(String(month).length == 1)
-		    month = "0" + month;
-
+		var day;
+		var month;
+		var year;
+		var format = this.dateFormat;
+		var dateArr = dateString.split("/");
+		
 		switch( format ){
 
 			case "dd/mm/yyyy":
+
+				day = dateArr[2];
+				month = parseInt(dateArr[1])+1;
+				year = dateArr[0];
+				
+				if(day.length == 1)
+					day = "0" + day;
+				if(String(month).length == 1)
+				    month = "0" + month;
+
 				date = day + "/" + month + "/" + year
+
 				break;
+
 			case "mm/yyyy":
+
+				month = parseInt(dateArr[0])+1;
+				year = dateArr[1];
+				
+				if(month.length == 1)
+					month = "0" + month;
+
 				date = month + "/" + year;
 				break;
 			default:
@@ -443,6 +545,11 @@ datepicker = function(obj){
 		this.setActualMonth(newMonth);
 		this.setActualYear(newYear);
 
+		if(this.hideDays){
+
+			newDate = newYear + "/" + newMonth + "/01";
+			this.setDate(newDate);
+		}
 		this.destroy();
 		this.render();
 	}
@@ -479,7 +586,7 @@ datepicker = function(obj){
 		daysArr = [];
 
 		currentMonth = currentDate.getMonth();
-		currentYear = currentDate.getFullYear();
+		currentYear  = currentDate.getFullYear();
 
 		maxDayThisMonth = new Date(currentYear, currentMonth+1, 0);
 		maxDayThisMonth = maxDayThisMonth.getDate();
@@ -490,7 +597,7 @@ datepicker = function(obj){
 		lastMonth       = dateLastMonth.getMonth();
 		lastYear        = dateLastMonth.getFullYear();
 
-		nextDate = new Date(currentYear, currentMonth+1, 1);
+		nextDate  = new Date(currentYear, currentMonth+1, 1);
 		nextMonth = nextDate.getMonth();
 		nextYear  = nextDate.getFullYear();
 
@@ -546,13 +653,21 @@ datepicker = function(obj){
 
 			date = date.split('/');
 
-			if(this.dateFormat == "mm/yyyy"){
-				this.setActualMonth( date[0] );
-				this.setActualYear( date[1] );
-			}else{
-				this.setActualDay( date[0] );
-				this.setActualMonth( date[1] );
-				this.setActualYear( date[2] );
+			switch (this.dateFormat){
+
+				case "dd/mm/yyyy":
+
+					this.setActualDay( date[0] );
+					this.setActualMonth( date[1] );
+					this.setActualYear( date[2] );	
+
+					break;
+				case "mm/yyyy":
+
+					this.setActualMonth( date[0] );
+					this.setActualYear( date[1] );
+					
+					break;
 			}
 		}
 	}
@@ -561,9 +676,6 @@ datepicker = function(obj){
 }
 
 /***************TODO******************/
-
-// Quando o formato de data for "mm/yyyy" no lugar dos dias, renderizar botões com os meses
-// Parametro para indicar a posição em que o calendario será renderizado em relação ao field, (bottom/right, bottom/left, top/right, top/left);
 // implementar fechamento do calendario ao clicar fora
 // implementar fechamento da div de seleção de ano ao clicar fora
 // Parametro para informar se deve inserir um botão de calendario anexado ao field

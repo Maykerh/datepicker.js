@@ -1,8 +1,9 @@
 	.datepicker{
 		width: 250px;
-		height: 250px;
+		height: auto;
 		background-color: #fff;
 		border: 1px solid #7f8c8d;
+		padding-bottom: 5px;
 		border-radius: 5px;
 		margin-top: 10px;
 		color: #1d1d1d;
@@ -11,7 +12,7 @@
 		box-shadow: 5px 7px 14px -6px rgba(0,0,0,0.4);
 		position: absolute;
 	}
-	
+
 	.year-month{
 		width: 100%;
 		height: 50px;
@@ -66,7 +67,22 @@
 		height: 25px;
 	}
 
-	.day-button{
+	#months{
+		width: 100%;
+		background-color: #fff;
+		padding: 5px 5px 0 5px;
+	}
+
+	#months td{
+		width: 25px;
+	}
+
+	#months tr{
+		height: 35px;
+	}
+
+
+	.date-button{
 		width: 28px;
 		height: 25px;
 		margin: 3px;
@@ -76,7 +92,7 @@
 		border-radius: 5px;
 	}
 
-	.day-button:hover{
+	.date-button:hover{
 		background-color: #ddd;
 	}
 
@@ -112,7 +128,6 @@
 		height: 175px;
 		margin: 0 96px;
 		align-self: center;
-		z-index: 2;
 		border: 1px solid #ddd;
 		border-top: none;
 		border-bottom-right-radius: 5px;
@@ -123,6 +138,7 @@
 		box-shadow: 5px 7px 14px -6px rgba(0,0,0,0.4);
 		font-family: sans-serif;
 		font-size: 14px;
+		position: absolute;
 	}
 
 	.select-year-div table{

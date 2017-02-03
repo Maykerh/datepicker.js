@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<input type="text" id="recebeDatePicker">
+<input type="text" id="recebeDatePicker" style="width: 100px;position: absolute; left : 200px; top: 300px">
 
 </div>
 
@@ -25,8 +25,14 @@ datepicker = new datepicker({
 					name: 'datepicker',
 					valueField: "recebeDatePicker",
 					hasButton: false,
-					dependentField: false
-
+					dependentField: false,
+					closeOnSelect: true,
+					hideDays:false,
+					xPos: 'left',
+					yPos: 'top'
 });
+
+
+
 
 </script>
