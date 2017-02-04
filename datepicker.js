@@ -13,9 +13,8 @@ datepicker = function(obj){
 	this.actualMonth; 				//Numero do mes em exibição na tela;
 	this.actualYear; 				// ano em exibição na tela
 	this.date; 						// guarda a ultima data selecionada no formato yyyy/mm/dd
-	this.dateFormat = "dd/mm/yyyy"; //formato da data
+	this.dateFormat = "dd/mm/yyyy"; //formato da data - aceita "dd/mm/yyyy" e "mm/yyyy"
 	this.closeOnSelect = true; 	//define se o datepicker se fecha ao selecionar uma data
-	this.hideDays = false; // Se true exibe botões com nome dos mêses no lugar dos dias.
 	this.xPos = 'left'; // Define a posição horizontal em relação ao text field - "right" ou "left"
 	this.yPos = 'bottom'; // Define a posição vertical em relação ao text field - "top" ou "bottom"
 	this.hasButton = false; // Define se erá renderizado um botão de calendário ao lado do text field;
@@ -61,8 +60,6 @@ datepicker = function(obj){
 
 		divDateField.style.width = dateField.style.width;
 		divDateField.style.height = dateField.style.height;
-
-		alert(divDateField.style.width)
 	
 		if(this.hasButton)
 			this.insertButton(divDateField, dateField);
@@ -77,7 +74,7 @@ datepicker = function(obj){
 		if(this.height)
 			height  = this.height;
 		
-		dateField.style.width = "calc(100% - 28px)";
+		dateField.style.width = "calc(100% - 33px)";
 
 		var calendarButton = document.createElement('div');
 		calendarButton.id = 'calendar-button';
@@ -101,6 +98,50 @@ datepicker = function(obj){
 		document.body.removeChild(divDatepicker);
 	}
 
+	this.defineArrowPosition = function(objToFind, arrowObj) {
+
+		height = objToFind.offsetHeight;
+		width = objToFind.offsetWidth;
+
+		var arrowBorder       	  = document.createElement('div');
+		arrowBorder.className 	  = "arrow arrow-border";
+		arrowBorder.id        	  = "arrow-border";	
+		objToFind .appendChild(arrowBorder);
+
+		if(this.xPos == 'right'){
+			arrowObj.style.left = (width - 25) + "px";
+			arrowBorder.style.left = (width - 25) + "px";
+		}else{
+			arrowObj.style.left = 20 + "px";
+			arrowBorder.style.left = 20 + "px";
+		}
+		if(this.yPos == "top"){
+			arrowObj.style.top = (height - 2) + "px";
+			arrowObj.style.clipPath = "polygon(50% 50%, 0% 0%, 100% 0%";4
+			arrowObj.style.backgroundColor = "#fff";
+			arrowBorder.style.top = (height - 1) + "px";
+			arrowBorder.style.clipPath = "polygon(50% 50%, 0% 0%, 100% 0%";
+		}else{
+			arrowObj.style.top = -14 + "px";
+			arrowObj.style.clipPath = "polygon(50% 50%, 0% 100%, 100% 100%)";
+			arrowBorder.style.top = -15.5 + "px"
+			arrowBorder.style.clipPath = "polygon(50% 50%, 0% 100%, 100% 100%)";
+		}
+
+
+		/*if(this.xPos == 'left')
+			objToRender.style.left = posleft + "px";
+		else
+			objToRender.style.left = ((posleft - myWidth) + width) + "px";
+
+		if(this.yPos == 'bottom')
+			objToRender.style.top = postop + height + "px";
+		else
+			objToRender.style.top = ((postop - myHeight) - height) + "px";
+*/
+		arrowObj.style.position = "absolute";
+		arrowBorder.style.position = "absolute";
+	}
 	/*
 	 * Método para renderizar o objeto na tela ao clicar no text field ou button
 	 */
@@ -117,24 +158,12 @@ datepicker = function(obj){
 		month = this.getActualMonth();
 		year = this.getActualYear();
 
-		divField = document.getElementById("div-field");
+		divField = document.getElementById('div-field');
 
 		var divDatepicker       	  = document.createElement('div');
 		divDatepicker.className 	  = "datepicker";
 		divDatepicker.id        	  = "datepicker";
 		document.body.appendChild(divDatepicker);
-
-			var divArrow       	  = document.createElement('div');
-			divArrow.className 	  = "arrow";
-			divArrow.id        	  = "arrow";
-			if(this.xPos == 'right')
-				divArrow.style.left = "230px";
-			if(this.yPos == "top"){
-				divArrow.style.top = "244px";
-				divArrow.style.clipPath = "polygon(50% 50%, 0% 0%, 100% 0%";
-			}
-	
-			divDatepicker .appendChild(divArrow);
 
 			var divYearMonth       = document.createElement('div');
 			divYearMonth.className = "year-month";
@@ -197,12 +226,20 @@ datepicker = function(obj){
 					iconButtonFrw.className += " direction-symbol";
 					divButtonFrw.appendChild(iconButtonFrw);
 
-		if(this.hideDays)
+
+
+		if(this.dateFormat == "mm/yyyy")
 			this.renderMonthsDiv(divDatepicker);
 		else
 			this.renderDaysDiv(divDatepicker);
 
 		this.definePosition(divField, divDatepicker);
+
+		var divArrow       	  = document.createElement('div');
+		divArrow.className 	  = "arrow";
+		divArrow.id        	  = "arrow";
+		this.defineArrowPosition(divDatepicker, divArrow);	
+		divDatepicker.appendChild(divArrow);
 	}
 
 	this.renderDaysDiv = function(divDatepicker){
@@ -266,47 +303,32 @@ datepicker = function(obj){
 		tableMonths.id          = "months";
 		tableMonths.cellSpacing = 0;
 		divDatepicker.appendChild(tableMonths);
-		divDatepicker.style.width = "190px";
+		
+		var monthsTr = [];
+		var monthsTd = [];
 
-			/*var daysHead   = document.createElement('thead');
-			tableDays.appendChild(daysHead);
+		for(var i = 0; i < 3; i++){
 
-				var daysHeadTr = document.createElement('tr');
-				daysHead.appendChild(daysHeadTr);
-					
-					var th = [];
+			monthsTr[i] = document.createElement('tr');
+			tableMonths.appendChild(monthsTr[i]);
 
-					for(var i = 0; i < this.weekDays.length; i++){
-						th[i] = document.createElement('th');
-						th[i].innerHTML = this.weekDays[i];
-						daysHeadTr.appendChild(th[i]);
-					}
-			*/
-			var monthsTr = [];
-			var monthsTd = [];
+			for(var j = (i*4); j < ((i+1)*4); j++){
 
-			for(var i = 0; i < 3; i++){
+				monthsTd[j]       = document.createElement('td');
+				monthsTd[j].className = "date-button";
+				monthsTd[j].value = this.getActualYear() + "/" + j + "/01" ;
 
-				monthsTr[i] = document.createElement('tr');
-				tableMonths.appendChild(monthsTr[i]);
+				isLastSelectedDate = this.isLastSelectedDate( monthsTd[j].value );
 
-				for(var j = (i*4); j < ((i+1)*4); j++){
+				if(isLastSelectedDate)
+					monthsTd[j].className += " selected";
 
-					monthsTd[j]       = document.createElement('td');
-					monthsTd[j].className = "date-button";
-					monthsTd[j].value = this.getActualYear() + "/" + j + "/01" ;
+				monthsTd[j].innerHTML = this.monthNamesAbbr[j];
+				monthsTd[j].setAttribute("onclick", this.name+".selectDate(this)");
 
-					isLastSelectedDate = this.isLastSelectedDate( monthsTd[j].value );
-
-					if(isLastSelectedDate)
-						monthsTd[j].className += " selected";
-
-					monthsTd[j].innerHTML = this.monthNamesAbbr[j];
-					monthsTd[j].setAttribute("onclick", this.name+".selectDate(this)");
-
-					monthsTr[i].appendChild(monthsTd[j]);
-				}
+				monthsTr[i].appendChild(monthsTd[j]);
 			}
+		}
 
 	}
 
@@ -331,7 +353,7 @@ datepicker = function(obj){
 		selectYearDiv.id = "select-year-div";
 		selectYearDiv.className = "select-year-div";
 	
-		if(this.hideDays){//arrumar aqui para transform
+		if(this.dateFormat == "mm/yyyy"){
 			this.definePosition(yearNameButton, selectYearDiv, "margin: 0 65px; margin-top: -137px");
 		}else{
 			selectYearDiv.style.position  = "element(year-name)";
@@ -368,8 +390,8 @@ datepicker = function(obj){
 
 	this.definePosition = function(objToFind, objToRender, style = null) {
 
-		posleft = objToFind.offsetLeft;
-		postop = objToFind.offsetTop;
+		posleft = this.getOffset(objToFind).left;
+		postop = this.getOffset(objToFind).top;
 		height = objToFind.offsetHeight;
 		width = objToFind.offsetWidth;
 		myWidth = objToRender.offsetWidth;
@@ -389,6 +411,16 @@ datepicker = function(obj){
 
 		if(style != null)
 			objToRender.style += "; " + style;
+	}
+
+	this.getOffset = function(el){
+	  	
+	  	el = el.getBoundingClientRect();
+	  	
+	  	return {
+	    	left: el.left + window.scrollX,
+	   		top: el.top + window.scrollY
+	  	}
 	}
 
 	this.renderButton = function(){
@@ -585,7 +617,7 @@ datepicker = function(obj){
 		this.setActualMonth(newMonth);
 		this.setActualYear(newYear);
 
-		if(this.hideDays){
+		if(this.dateFormat == "mm/yyyy"){
 
 			newDate = newYear + "/" + newMonth + "/01";
 			this.setDate(newDate);
@@ -686,7 +718,7 @@ datepicker = function(obj){
 		
 		switch (this.dateFormat){
 
-			case "dd/mm/yyyy":
+			case "dd/mm/yyyy" && date.length > 0:
 
 				this.setActualDay( date[0] );
 				this.setActualMonth( date[1]-1 );

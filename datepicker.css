@@ -9,7 +9,6 @@
 		color: #1d1d1d;
 		font-family: sans-serif;
 		font-size: 14px;
-
 		box-shadow: 5px 7px 14px -6px rgba(0,0,0,0.4);
 		position: absolute;
 	}
@@ -22,7 +21,6 @@
     box-sizing: border-box;
     width: 100%;
     background: #fff;
-    margin-bottom: 4%;
     border: 1px solid #ccc;
     padding: 5px;
     color: #555;
@@ -38,7 +36,7 @@
 
 	.calendar-button{
 		float: left;
-		width: 27px;
+		width: 30px;
 		background-color: #ddd;
 		border-top-right-radius: 5px;
 		border-bottom-right-radius: 5px;
@@ -123,7 +121,7 @@
 	}
 
 	#months tr{
-		height: 35px;
+		height: 61.45px;
 	}
 
 	.date-button{
@@ -254,13 +252,15 @@
 		background-color: #fff;
 	}
 
-	.arrow {
-		position: absolute;
-		left: 10px;
-		top: -15px;
-		clip-path: polygon(50% 50%, 0% 100%, 100% 100%);
+	.arrow {	
 	    background-color: #eee;
 	    width: 10px;
 	    height: 15px;
+	}
+	.arrow-border{
+		background-color: #7f8c8d;
+		width: 10px;
+	    height: 15px;
+	    position: absolute;
 	}
 

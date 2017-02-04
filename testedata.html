@@ -7,11 +7,17 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
 
+<style>
+
+	#teste{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+}
+	</style>
 </head>
 <body>
-
-
-<input type="text" id="recebeDatePicker" style="width: 100px;position: absolute; left : 200px; top: 300px" value="10/02/1993">
 
 <div id="teste" style="width: 300px"></div>
 
@@ -26,17 +32,15 @@
 datepicker = new datepicker({
 					id: "date1",
 					name: 'datepicker',
-					/*valueField: "date-1",*/
 					renderTo: "teste",
 					hasButton: true,
 					dependentField: false,
 					closeOnSelect: true,
 					hideDays: false,
-					dateFormat: "mm/yyyy",
+					dateFormat: "dd/mm/yyyy",
 					xPos: 'right',
 					yPos: 'bottom',
-					height: 50,
-					width: 250
+
 });
 
 
