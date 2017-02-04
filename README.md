@@ -13,7 +13,8 @@
    ```html 
    <script type="text/javascript" src="datepicker.js"></script>
    ```
-  3. Criar um div no seu código html para receber o datepicker
+  3. Criar uma div no seu código html para receber o datepicker
+  
    ```html 
    <div id="recebedatepicker" style="width: 250px">
    ```
