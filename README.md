@@ -25,33 +25,33 @@
 
 # Parametros de configuração:
   
-  * **id** {requerido}<br>
+  * **id** *(String)* {requerido}<br>
     * Id do text field que receberá a data.<br><br>
-  * **name** {requerido}<br>
+  * **name** *(String)* {requerido}<br>
     * Nome dado ao objeto instanciado do datepicker.<br><br>
-  * **renderTo** {requerido}<br>
+  * **renderTo** *(String)* {requerido}<br>
     *Id da div que receberá o text field de data.<br><br>
-  * **height** {Padrão: '30px'}<br>
+  * **height** *(Int)* {Padrão: '30'}<br>
     * Altura do campo de data.<br><br>
-  * **width** {Padrão: Largura da div passada no parametro 'renderTo'}<br>
+  * **width** *(Int)* {Padrão: Largura da div passada no parametro 'renderTo'}<br>
     * Largura do campo de data'<br><br>
-  * **fieldStyle** {Padrão: false}<br>
-    * CSS personalizado para o campo de data.<br><br>
-  * **dateFormat** {Padrão: 'dd/mm/yyy'}<br>
-    * Formato de data, atualmente aceitando apenas dois formatos:<br>
+  * **fieldStyle** *(String)* {Padrão: false}<br>
+    * CSS personalizado para o campo de data. Ex: "border: 3px solid black; background-color: #eee"<br><br>
+  * **dateFormat** *(String)* {Padrão: 'dd/mm/yyy'}<br>
+    * Formato de data. Atualmente aceitando apenas dois formatos:<br>
       * 'dd/mm/yyyy'<br>
       * 'mm/yyyy' -> No lugar dos botões de dias renderiza botões de meses<br><br>
-  * **closeOnSelect** {Padrão: true}<br>
+  * **closeOnSelect** *(Boolean)* {Padrão: true}<br>
     * Seta se o datepicker será fechado ao selecionar uma data.<br><br>
-  * **xPos** {Padrão: 'left'}<br>
+  * **xPos** *(String)* {Padrão: 'left'}<br>
     * Determina a posição em que o calendário será renderizado no eixo X.<br>
       * 'left'  -> Renderiza o calendário da borda esquerda do text field para a direita<br>
       * 'right' -> Renderiza o calendário da borda direita do text field para a direita<br><br>
-  * **yPos** {Padrão: 'bottom'}<br>
+  * **yPos** *(String)* {Padrão: 'bottom'}<br>
     * Determina a posição em que o calendário será renderizado no eixo Y.<br>
       * 'bottom'  -> Renderiza o calendário abaixo do text field<br>
-      * 'right' -> Renderiza o calendário acima do text field<br><br>
-  * **hasButton** {Padrão: false}<br>
+      * 'top' -> Renderiza o calendário acima do text field<br><br>
+  * **hasButton** *(Boolean)* {Padrão: false}<br>
     * Seta se o text field terá um botão de calendário ao lado direito<br><br>
     
 	
