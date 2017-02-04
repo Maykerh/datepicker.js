@@ -1,7 +1,10 @@
 datepicker = function(obj){
 
-	this.id; 						//id do datepicker
-	this.valueField; 				//Campo de texto que receberá a data e o action de render do datepicker
+	this.id; 	   //id do campo de data
+	this.height = false // altura do campo
+	this.width = false;//largura do campo
+	this.fieldStyle = false; // css personalizado para o input
+	this.renderTo; // id da div onde será renderizado o campo de data
 	this.name; 						//nome do objeto instanciado do datepicker
 	this.weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 	this.monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -22,18 +25,16 @@ datepicker = function(obj){
 		for(var key in obj){ 
 			
 			this[key] = obj[key];
+
 		}
 	}
 
 	this.setUserOptions();
 
 	/* 
-	 * Método que insere a action para renderizar o datepicker ao clicar no text field passado por parametro.
+	 * Método que insere o campo de data dentro de um div informada no parametro renderTo.
 	 */
 	this.output = function(){
-
-		field = document.getElementById(this.valueField);
-		field.setAttribute("onclick",this.name+".render()");
 
 		var fileref = document.createElement("link");
 		fileref.rel = "stylesheet";
@@ -41,9 +42,56 @@ datepicker = function(obj){
 		fileref.href = "datepicker.css";
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 
+		var divDateField = document.createElement("div");
+		divDateField.id = "div-field";
+		divDateField.className = "div-field"; 
+		divDateField.setAttribute("onclick",this.name+".render()");
+		document.getElementById(this.renderTo).appendChild(divDateField);
+
+			var dateField = document.createElement("input");
+			dateField.id = this.id;
+			dateField.className = "date-field";
+			if(this.fieldStyle)
+				dateField.style = ";" + this.fieldStyle;
+			if(this.height)
+				dateField.style.height = this.height + "px";
+			if(this.width)
+				dateField.style.width = this.width + "px";
+			divDateField.appendChild(dateField);
+
+		divDateField.style.width = dateField.style.width;
+		divDateField.style.height = dateField.style.height;
+
+		alert(divDateField.style.width)
+	
+		if(this.hasButton)
+			this.insertButton(divDateField, dateField);
+
 		this.getFieldDate();
 	}
 
+	this.insertButton = function(divDateField, dateField){
+
+		height = 30;
+
+		if(this.height)
+			height  = this.height;
+		
+		dateField.style.width = "calc(100% - 28px)";
+
+		var calendarButton = document.createElement('div');
+		calendarButton.id = 'calendar-button';
+		calendarButton.className = 'calendar-button';
+		calendarButton.style.height = (height - 2) + "px"; 
+		divDateField.appendChild(calendarButton);
+
+			var calendarIcon = document.createElement("i");
+			calendarIcon.id = "calendar-icon";
+			calendarIcon.className = "fa fa-calendar";
+			calendarIcon.className += " calendar-icon";
+			calendarButton.appendChild(calendarIcon);
+
+	}
 	/*
 	 * Método para remover o objeto renderizado da tela;
 	*/
@@ -69,7 +117,7 @@ datepicker = function(obj){
 		month = this.getActualMonth();
 		year = this.getActualYear();
 
-		field = document.getElementById(this.valueField);
+		divField = document.getElementById("div-field");
 
 		var divDatepicker       	  = document.createElement('div');
 		divDatepicker.className 	  = "datepicker";
@@ -85,8 +133,6 @@ datepicker = function(obj){
 				divArrow.style.top = "244px";
 				divArrow.style.clipPath = "polygon(50% 50%, 0% 0%, 100% 0%";
 			}
-
-			console.log(divArrow.style);
 	
 			divDatepicker .appendChild(divArrow);
 
@@ -102,8 +148,8 @@ datepicker = function(obj){
 				divYearMonth.appendChild(divButtonBack);
 
 					var iconButtonBack 		 = document.createElement('i');
-					iconButtonBack.className = "direction-symbol";
-					iconButtonBack.innerHTML = "<<";
+					iconButtonBack.className = "fa fa-arrow-circle-left fa-lg";
+					iconButtonBack.className += " direction-symbol";
 					divButtonBack.appendChild(iconButtonBack);
 
 				var divActualMonth       = document.createElement('div');
@@ -122,10 +168,8 @@ datepicker = function(obj){
 
 							var spanYearName = document.createElement('span');
 							spanYearName.id = "span-year-name";
-							spanYearName.innerHTML = this.getActualYear();
-							
+							spanYearName.innerHTML = this.getActualYear();	
 							yearNameButton.appendChild(spanYearName);
-
 
 								var iconDown = document.createElement('div');
 								iconDown.innerHTML = "";
@@ -149,8 +193,8 @@ datepicker = function(obj){
 				divYearMonth.appendChild(divButtonFrw);
 
 					var iconButtonFrw 		= document.createElement('i');
-					iconButtonFrw.className = "direction-symbol";
-					iconButtonFrw.innerHTML = ">>";
+					iconButtonFrw.className = "fa fa-arrow-circle-right fa-lg";
+					iconButtonFrw.className += " direction-symbol";
 					divButtonFrw.appendChild(iconButtonFrw);
 
 		if(this.hideDays)
@@ -158,7 +202,7 @@ datepicker = function(obj){
 		else
 			this.renderDaysDiv(divDatepicker);
 
-		this.definePosition(field, divDatepicker);
+		this.definePosition(divField, divDatepicker);
 	}
 
 	this.renderDaysDiv = function(divDatepicker){
@@ -331,25 +375,20 @@ datepicker = function(obj){
 		myWidth = objToRender.offsetWidth;
 		myHeight = objToRender.offsetHeight;
 
-		if(this.xPos == 'left'){
-
+		if(this.xPos == 'left')
 			objToRender.style.left = posleft + "px";
-		}else{
-
+		else
 			objToRender.style.left = ((posleft - myWidth) + width) + "px";
-		}
 
-		if(this.yPos == 'bottom'){
-
+		if(this.yPos == 'bottom')
 			objToRender.style.top = postop + height + "px";
-		}else{
-
+		else
 			objToRender.style.top = ((postop - myHeight) - height) + "px";
-		}
+
 		objToRender.style.position = "absolute";
 
 		if(style != null)
-			objToRender.style += "; " + style
+			objToRender.style += "; " + style;
 	}
 
 	this.renderButton = function(){
@@ -458,8 +497,8 @@ datepicker = function(obj){
 
 			case "mm/yyyy":
 
-				month = parseInt(dateArr[0])+1;
-				year = dateArr[1];
+				month = String(parseInt(dateArr[1])+1);
+				year = dateArr[0];
 				
 				if(month.length == 1)
 					month = "0" + month;
@@ -477,6 +516,7 @@ datepicker = function(obj){
 
 		date = e.value;
 
+		console.log(e.value);
 		dateArr = date.split("/");
 
 		this.setActualDay(dateArr[2]);
@@ -487,7 +527,7 @@ datepicker = function(obj){
 
 		date = this.formatDate(date);
 		
-       	document.getElementById(this.valueField).value = date;
+       	document.getElementById(this.id).value = date;
 
        	this.destroy();
 
@@ -513,7 +553,7 @@ datepicker = function(obj){
 
 		if(month == null){
 
-			actualDate = document.getElementById(this.valueField).value;
+			actualDate = document.getElementById(this.id).value;
 
 			if(actualDate == null){
 
@@ -640,35 +680,30 @@ datepicker = function(obj){
 	* Método para resgatar a data que está preenchida no text field.
 	*/
 	this.getFieldDate = function(){
-		date = document.getElementById(this.valueField).value;
+		date = document.getElementById(this.id).value;
 
-		if( date == null || date == '' || typeof(date) == undefined ){
+		date = date.split('/');
+		
+		switch (this.dateFormat){
 
-			date = new Date();
+			case "dd/mm/yyyy":
+
+				this.setActualDay( date[0] );
+				this.setActualMonth( date[1]-1 );
+				this.setActualYear( date[2] );	
+
+				break;
+			case "mm/yyyy" && date.length == 2:
+
+				this.setActualMonth( date[0]-1);
+				this.setActualYear( date[1] );
 			
-			this.setActualDay( date.getDate() );
-			this.setActualMonth( date.getMonth() );
-			this.setActualYear( date.getFullYear() );
-		}else{
-
-			date = date.split('/');
-
-			switch (this.dateFormat){
-
-				case "dd/mm/yyyy":
-
-					this.setActualDay( date[0] );
-					this.setActualMonth( date[1] );
-					this.setActualYear( date[2] );	
-
-					break;
-				case "mm/yyyy":
-
-					this.setActualMonth( date[0] );
-					this.setActualYear( date[1] );
-					
-					break;
-			}
+				break;
+			default:
+				date = new Date();
+				this.setActualDay( date.getDate() );
+				this.setActualMonth( date.getMonth() );
+				this.setActualYear( date.getFullYear() );
 		}
 	}
 
@@ -678,7 +713,6 @@ datepicker = function(obj){
 /***************TODO******************/
 // implementar fechamento do calendario ao clicar fora
 // implementar fechamento da div de seleção de ano ao clicar fora
-// Parametro para informar se deve inserir um botão de calendario anexado ao field
 // Parametro para setar se o campo de data depende de outro, se sim, a data deste campo não pode ser menor que o qual ele depende 
 // Parametros para personalizar as cores;
 // Parametros para desabilitar datas passadas ou futuras;
