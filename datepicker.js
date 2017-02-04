@@ -41,6 +41,12 @@ datepicker = function(obj){
 		fileref.href = "datepicker.css";
 		document.getElementsByTagName("head")[0].appendChild(fileref);
 
+		var fontIcons = document.createElement("link");
+		fontIcons.rel = "stylesheet";
+		fontIcons.type = "text/css";
+		fontIcons.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
+		document.getElementsByTagName("head")[0].appendChild(fontIcons);
+
 		var divDateField = document.createElement("div");
 		divDateField.id = "div-field";
 		divDateField.className = "div-field"; 
@@ -128,20 +134,10 @@ datepicker = function(obj){
 			arrowBorder.style.clipPath = "polygon(50% 50%, 0% 100%, 100% 100%)";
 		}
 
-
-		/*if(this.xPos == 'left')
-			objToRender.style.left = posleft + "px";
-		else
-			objToRender.style.left = ((posleft - myWidth) + width) + "px";
-
-		if(this.yPos == 'bottom')
-			objToRender.style.top = postop + height + "px";
-		else
-			objToRender.style.top = ((postop - myHeight) - height) + "px";
-*/
 		arrowObj.style.position = "absolute";
 		arrowBorder.style.position = "absolute";
 	}
+
 	/*
 	 * Método para renderizar o objeto na tela ao clicar no text field ou button
 	 */
