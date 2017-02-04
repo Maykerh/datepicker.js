@@ -10,9 +10,13 @@
   1. Fazer o download dos arquivos datepicker.js e datepicker.css da pasta src
   2. Incluir o arquivo js no código html
 
-   ```html <script type="text/javascript" src="datepicker.js"></script>```
+   ```html 
+   <script type="text/javascript" src="datepicker.js"></script>
+   ```
   3. Criar um div no seu código html para receber o datepicker
-   ```html <div id="recebedatepicker" style="width: 250px">```
+   ```html 
+   <div id="recebedatepicker" style="width: 250px">
+   ```
   4. Agora basta instanciar o objeto javascript informando o id do text field que será criado, o nome do objeto datepicker e o id da div onde será adicionado o text field<br>
    ```js
       myDatepicker = new datepicker({
